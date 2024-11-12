@@ -12,11 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.slytechs.jnet.jnetruntime.bpf.vm.api.ExecutionContext;
-import com.slytechs.jnet.jnetruntime.bpf.vm.api.ExtensionContext;
-import com.slytechs.jnet.jnetruntime.bpf.vm.api.ExtensionException;
-import com.slytechs.jnet.jnetruntime.bpf.vm.api.ProtocolInfo;
-import com.slytechs.jnet.jnetruntime.bpf.vm.core.DefaultBpfExtension;
+import com.slytechs.jnet.jnetpcap.bpf.vm.api.ExecutionContext;
+import com.slytechs.jnet.jnetpcap.bpf.vm.api.ExtensionContext;
+import com.slytechs.jnet.jnetpcap.bpf.vm.api.ExtensionException;
+import com.slytechs.jnet.jnetpcap.bpf.vm.api.ProtocolInfo;
+import com.slytechs.jnet.jnetpcap.bpf.vm.core.DefaultBpfExtension;
 
 /**
  * Test suite for DefaultBpfExtension.
