@@ -20,10 +20,10 @@ package com.slytechs.jnet.jnetruntime.bpf.vm.tools;
 /**
  * Exception thrown for disassembly errors.
  */
-public class DisassemblyException extends RuntimeException {
+public class AssemblyException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public DisassemblyException(String message) {
+	public AssemblyException(String message) {
 		super(message);
 	}
 }

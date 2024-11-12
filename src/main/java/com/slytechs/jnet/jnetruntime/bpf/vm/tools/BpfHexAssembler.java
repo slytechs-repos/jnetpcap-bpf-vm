@@ -10,23 +10,23 @@ import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfProgram;
 import com.slytechs.jnet.jnetruntime.bpf.vm.instruction.BpfOpcode;
 
 /**
- * Disassembler for tcpdump -dd hexadecimal output format. Converts hexadecimal
+ * Assembler for tcpdump -dd hexadecimal output format. Converts hexadecimal
  * representation of BPF instructions into executable `BpfInstruction` objects.
  */
-public class BpfHexDisassembler {
+public class BpfHexAssembler {
 
 	// Pattern to match hex instruction format: { 0xNN, N, N, 0xNNNNNNNN }
 	private static final Pattern HEX_INSTRUCTION_PATTERN = Pattern.compile(
 			"\\{\\s*0x([0-9a-fA-F]+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*0x([0-9a-fA-F]+)\\s*\\},?");
 
 	/**
-	 * Disassembles tcpdump -dd output format into a BPF program.
+	 * Assembles tcpdump -dd output format into a BPF program.
 	 *
 	 * @param hexOutput The tcpdump -dd formatted output
 	 * @return Compiled BPF program
-	 * @throws DisassemblyException if parsing fails
+	 * @throws AssemblyException if parsing fails
 	 */
-	public static BpfProgram disassembleHex(String hexOutput) {
+	public static BpfProgram assembleHex(String hexOutput) {
 		List<BpfInstruction> instructions = new ArrayList<>();
 
 		// Split into lines and clean up
@@ -49,15 +49,15 @@ public class BpfHexDisassembler {
 				if (inst != null) {
 					instructions.add(inst);
 				}
-			} catch (DisassemblyException e) {
-				throw new DisassemblyException(
+			} catch (AssemblyException e) {
+				throw new AssemblyException(
 						String.format("Error at instruction %d: %s",
 								instructions.size(), e.getMessage()));
 			}
 		}
 
 		if (instructions.isEmpty()) {
-			throw new DisassemblyException("No valid instructions found in input");
+			throw new AssemblyException("No valid instructions found in input");
 		}
 
 		return new BpfProgram(instructions.toArray(new BpfInstruction[0]));
@@ -69,7 +69,7 @@ public class BpfHexDisassembler {
 	private static BpfInstruction parseHexInstruction(String line) {
 		Matcher m = HEX_INSTRUCTION_PATTERN.matcher(line);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid hex instruction format: " + line);
+			throw new AssemblyException("Invalid hex instruction format: " + line);
 		}
 
 		try {
@@ -88,10 +88,10 @@ public class BpfHexDisassembler {
 			return BpfInstruction.create(opcode, jt, jf, k);
 
 		} catch (NumberFormatException e) {
-			throw new DisassemblyException("Failed to parse hex instruction: " + line +
+			throw new AssemblyException("Failed to parse hex instruction: " + line +
 					"\nError: " + e.getMessage());
 		} catch (IllegalArgumentException e) {
-			throw new DisassemblyException("Unknown opcode in instruction: " + line +
+			throw new AssemblyException("Unknown opcode in instruction: " + line +
 					"\nError: " + e.getMessage());
 		}
 	}
@@ -116,7 +116,7 @@ public class BpfHexDisassembler {
 				""";
 
 		try {
-			BpfProgram program = BpfHexDisassembler.disassembleHex(hexOutput);
+			BpfProgram program = BpfHexAssembler.assembleHex(hexOutput);
 
 			// Process the program as needed
 			for (BpfInstruction inst : program) {
@@ -129,8 +129,8 @@ public class BpfHexDisassembler {
 
 			System.out.println(output);
 
-		} catch (DisassemblyException e) {
-			System.err.println("Disassembly failed: " + e.getMessage());
+		} catch (AssemblyException e) {
+			System.err.println("Assembly failed: " + e.getMessage());
 			e.printStackTrace();
 		}
 

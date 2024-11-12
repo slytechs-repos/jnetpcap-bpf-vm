@@ -12,9 +12,9 @@ import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfProgram;
 import com.slytechs.jnet.jnetruntime.bpf.vm.instruction.BpfOpcode;
 
 /**
- * Disassembles tcpdump-style BPF program text into executable instructions.
+ * Assembles tcpdump-style BPF program text into executable instructions.
  */
-public class BpfDisassembler {
+public class BpfAssembler {
 
 	// Regular expression patterns for parsing
 	private static final Pattern LINE_PATTERN = Pattern.compile("\\((\\d{3})\\)\\s+(\\w+)\\s+(.*)");
@@ -68,13 +68,13 @@ public class BpfDisassembler {
 	}
 
 	/**
-	 * Disassembles tcpdump output into a BPF program.
+	 * Assembles tcpdump output into a BPF program.
 	 *
 	 * @param tcpdumpOutput The tcpdump-formatted program text
 	 * @return Compiled BPF program
-	 * @throws DisassemblyException if parsing fails
+	 * @throws AssemblyException if parsing fails
 	 */
-	public static BpfProgram disassemble(String tcpdumpOutput) {
+	public static BpfProgram assemble(String tcpdumpOutput) {
 		List<BpfInstruction> instructions = new ArrayList<>();
 		String[] lines = tcpdumpOutput.split("\n");
 
@@ -98,7 +98,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseLine(String line) {
 		Matcher m = LINE_PATTERN.matcher(line);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid instruction format: " + line);
+			throw new AssemblyException("Invalid instruction format: " + line);
 		}
 
 		int lineNum = Integer.parseInt(m.group(1));
@@ -107,7 +107,7 @@ public class BpfDisassembler {
 
 		BpfOpcode opcode = OPCODE_MAP.get(opcodeName.toLowerCase());
 		if (opcode == null) {
-			throw new DisassemblyException("Unknown opcode: " + opcodeName);
+			throw new AssemblyException("Unknown opcode: " + opcodeName);
 		}
 
 		return parseInstruction(opcodeName.toLowerCase(), opcode, operands, lineNum);
@@ -143,7 +143,7 @@ public class BpfDisassembler {
 			return parseExtended(opcode, operands);
 
 		default:
-			throw new DisassemblyException("Unsupported instruction format: " + opcode);
+			throw new AssemblyException("Unsupported instruction format: " + opcode);
 		}
 	}
 
@@ -153,7 +153,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseMemoryAbsolute(BpfOpcode opcode, String operands) {
 		Matcher m = MEMORY_ABS_PATTERN.matcher(operands);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid memory absolute format: " + operands);
+			throw new AssemblyException("Invalid memory absolute format: " + operands);
 		}
 
 		int offset = Integer.parseInt(m.group(1));
@@ -166,7 +166,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseMemoryIndirect(BpfOpcode opcode, String operands) {
 		Matcher m = MEMORY_IND_PATTERN.matcher(operands);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid memory indirect format: " + operands);
+			throw new AssemblyException("Invalid memory indirect format: " + operands);
 		}
 
 		int offset = Integer.parseInt(m.group(1));
@@ -179,7 +179,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseMemoryRegister(BpfOpcode opcode, String operands) {
 		Matcher m = MEMORY_REG_PATTERN.matcher(operands);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid memory register format: " + operands);
+			throw new AssemblyException("Invalid memory register format: " + operands);
 		}
 
 		int reg = Integer.parseInt(m.group(1));
@@ -189,7 +189,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseImmediate(String opcodeName, BpfOpcode opcode, String operands) {
 		Matcher m = IMMEDIATE_PATTERN.matcher(operands);
 		if (!m.find()) {
-			throw new DisassemblyException("Invalid immediate format: " + operands);
+			throw new AssemblyException("Invalid immediate format: " + operands);
 		}
 
 		String value = m.group(1);
@@ -203,10 +203,10 @@ public class BpfDisassembler {
 			}
 
 			if (immediate < 0 || immediate > 0xFFFFFFFFL) {
-				throw new DisassemblyException("Immediate value out of range: " + value);
+				throw new AssemblyException("Immediate value out of range: " + value);
 			}
 		} catch (NumberFormatException e) {
-			throw new DisassemblyException("Invalid immediate value format: " + value);
+			throw new AssemblyException("Invalid immediate value format: " + value);
 		}
 
 		// Handle special cases where the opcode may vary based on operands
@@ -242,7 +242,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseJumpUnconditional(BpfOpcode opcode, String operands) {
 		Matcher m = JUMP_UNCOND_PATTERN.matcher(operands);
 		if (!m.matches()) {
-			throw new DisassemblyException("Invalid unconditional jump format: " + operands);
+			throw new AssemblyException("Invalid unconditional jump format: " + operands);
 		}
 
 		int offset = Integer.parseInt(m.group(1));
@@ -252,7 +252,7 @@ public class BpfDisassembler {
 	private static BpfInstruction parseJumpConditional(BpfOpcode opcode, String operands) {
 		Matcher m = JUMP_PATTERN.matcher(operands);
 		if (!m.find()) {
-			throw new DisassemblyException("Invalid conditional jump format: " + operands);
+			throw new AssemblyException("Invalid conditional jump format: " + operands);
 		}
 
 		String immStr = m.group(1);
@@ -266,10 +266,10 @@ public class BpfDisassembler {
 			}
 
 			if (immediate > 0xFFFFFFFFL) {
-				throw new DisassemblyException("Immediate value too large: " + immStr);
+				throw new AssemblyException("Immediate value too large: " + immStr);
 			}
 		} catch (NumberFormatException e) {
-			throw new DisassemblyException("Invalid immediate value format: " + immStr);
+			throw new AssemblyException("Invalid immediate value format: " + immStr);
 		}
 
 		// Parse jump targets
@@ -289,7 +289,7 @@ public class BpfDisassembler {
 			Pattern crcPattern = Pattern.compile("crc offset=(\\d+) len=(\\d+)");
 			Matcher crcMatcher = crcPattern.matcher(operands);
 			if (!crcMatcher.matches()) {
-				throw new DisassemblyException("Invalid CHK_CRC format: " + operands);
+				throw new AssemblyException("Invalid CHK_CRC format: " + operands);
 			}
 			int offset = Integer.parseInt(crcMatcher.group(1));
 			int length = Integer.parseInt(crcMatcher.group(2));
@@ -300,7 +300,7 @@ public class BpfDisassembler {
 			Pattern frameLenPattern = Pattern.compile("frame_len >=(\\d+)");
 			Matcher frameLenMatcher = frameLenPattern.matcher(operands);
 			if (!frameLenMatcher.matches()) {
-				throw new DisassemblyException("Invalid CHK_FRAME_LEN format: " + operands);
+				throw new AssemblyException("Invalid CHK_FRAME_LEN format: " + operands);
 			}
 			int frameLen = Integer.parseInt(frameLenMatcher.group(1));
 			return BpfInstruction.create(opcode, 0, 0, frameLen);
@@ -310,7 +310,7 @@ public class BpfDisassembler {
 			Pattern protoLocPattern = Pattern.compile("proto_loc layer=(\\d+) offset=(\\d+)");
 			Matcher protoLocMatcher = protoLocPattern.matcher(operands);
 			if (!protoLocMatcher.matches()) {
-				throw new DisassemblyException("Invalid CHK_PROTO_LOC format: " + operands);
+				throw new AssemblyException("Invalid CHK_PROTO_LOC format: " + operands);
 			}
 			int layer = Integer.parseInt(protoLocMatcher.group(1));
 			int protoOffset = Integer.parseInt(protoLocMatcher.group(2));
@@ -323,34 +323,34 @@ public class BpfDisassembler {
 			return BpfInstruction.create(opcode, 0, 0, 0);
 
 		default:
-			throw new DisassemblyException("Unknown extended opcode: " + opcode);
+			throw new AssemblyException("Unknown extended opcode: " + opcode);
 		}
 	}
 
 	/**
-	 * Disassembles tcpdump output in either text (-d) or hex (-dd) format.
+	 * Assembles tcpdump output in either text (-d) or hex (-dd) format.
 	 *
 	 * @param input       The tcpdump formatted program text
 	 * @param isHexFormat true if input is in -dd format, false for -d format
 	 * @return Compiled BPF program
-	 * @throws DisassemblyException if parsing fails
+	 * @throws AssemblyException if parsing fails
 	 */
-	public static BpfProgram disassemble(String input, boolean isHexFormat) {
+	public static BpfProgram assemble(String input, boolean isHexFormat) {
 		if (isHexFormat) {
-			return BpfHexDisassembler.disassembleHex(input);
+			return BpfHexAssembler.assembleHex(input);
 		} else {
-			return disassemble(input);
+			return assemble(input);
 		}
 	}
 
 	/**
-	 * Attempts to auto-detect the format and disassemble accordingly.
+	 * Attempts to auto-detect the format and assemble accordingly.
 	 *
 	 * @param input The tcpdump formatted program text
 	 * @return Compiled BPF program
-	 * @throws DisassemblyException if parsing fails
+	 * @throws AssemblyException if parsing fails
 	 */
-	public static BpfProgram disassembleAuto(String input) {
+	public static BpfProgram assembleAuto(String input) {
 		// Check first non-empty, non-warning line
 		String[] lines = input.split("\n");
 		for (String line : lines) {
@@ -360,38 +360,13 @@ public class BpfDisassembler {
 
 			// Check if it matches hex format
 			if (line.startsWith("{") && line.contains("0x")) {
-				return BpfHexDisassembler.disassembleHex(input);
+				return BpfHexAssembler.assembleHex(input);
 			} else if (line.startsWith("(")) {
-				return disassemble(input);
+				return assemble(input);
 			}
 		}
 
-		throw new DisassemblyException("Unable to detect input format");
+		throw new AssemblyException("Unable to detect input format");
 	}
 
-	// Placeholder class (implement as needed)
-	public static class BpfHexDisassembler {
-		public static BpfProgram disassembleHex(String input) {
-			// Implement hex disassembly logic here
-			throw new UnsupportedOperationException("Hex disassembly not implemented");
-		}
-	}
-
-	// Placeholder class (implement as needed)
-	public static class BpfProgramDumper {
-		public static String dump(BpfProgram program) {
-			// Implement program dumping logic here
-			StringBuilder sb = new StringBuilder();
-			int lineNum = 0;
-			for (BpfInstruction inst : program) {
-				sb.append(String.format("(%03d) %s\n", lineNum++, formatInstruction(inst)));
-			}
-			return sb.toString();
-		}
-
-		private static String formatInstruction(BpfInstruction inst) {
-			// Implement instruction formatting logic here
-			return inst.getOpcodeEnum().getMnemonic();
-		}
-	}
 }
