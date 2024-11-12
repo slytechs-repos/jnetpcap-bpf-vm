@@ -1,5 +1,7 @@
-package com.slytechs.jnet.jnetruntime.bpf.vm.core;
+package com.slytechs.jnet.jnetruntime.bpf.vm.tools;
 
+import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfInstruction;
+import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfProgram;
 import com.slytechs.jnet.jnetruntime.bpf.vm.instruction.BpfOpcode;
 
 public class BpfProgramDumper {

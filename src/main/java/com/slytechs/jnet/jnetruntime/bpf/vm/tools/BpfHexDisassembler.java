@@ -1,10 +1,12 @@
-package com.slytechs.jnet.jnetruntime.bpf.vm.core;
+package com.slytechs.jnet.jnetruntime.bpf.vm.tools;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfInstruction;
+import com.slytechs.jnet.jnetruntime.bpf.vm.core.BpfProgram;
 import com.slytechs.jnet.jnetruntime.bpf.vm.instruction.BpfOpcode;
 
 /**
@@ -94,15 +96,6 @@ public class BpfHexDisassembler {
 		}
 	}
 
-	/**
-	 * Exception class for disassembly errors.
-	 */
-	public static class DisassemblyException extends RuntimeException {
-		public DisassemblyException(String message) {
-			super(message);
-		}
-	}
-
 	public static void main(String[] args) {
 		String hexOutput = """
 				{ 0x28, 0, 0, 0x0000000c },
@@ -131,12 +124,12 @@ public class BpfHexDisassembler {
 			}
 
 			System.out.println("-- BPF PROGRAM DUMPER -- ");
-			
+
 			var output = BpfProgramDumper.dump(program).toString();
-			
+
 			System.out.println(output);
 
-		} catch (BpfHexDisassembler.DisassemblyException e) {
+		} catch (DisassemblyException e) {
 			System.err.println("Disassembly failed: " + e.getMessage());
 			e.printStackTrace();
 		}

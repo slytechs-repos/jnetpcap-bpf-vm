@@ -15,7 +15,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.slytechs.jnet.jnetruntime.bpf.vm.core;
+package com.slytechs.jnet.jnetruntime.bpf.vm.tools;
 
 /**
  * Exception thrown for disassembly errors.
