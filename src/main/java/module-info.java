@@ -29,20 +29,20 @@
  * <li>Extension mechanism for custom functionality</li>
  * </ul>
  * 
- * @provides com.slytechs.jnet.jnetpcap.bpf.vm.api.BpfExtension Extension
+ * @provides com.slytechs.jnet.jnetruntime.jnpl.vm.api.BpfExtension Extension
  *           point for adding custom BPF functionality
  * 
- * @uses com.slytechs.jnet.jnetpcap.bpf.vm.api.BpfExtension Service interface
+ * @uses com.slytechs.jnet.jnetruntime.jnpl.vm.api.BpfExtension Service interface
  *       for BPF extensions
  * 
- * @see com.slytechs.jnet.jnetpcap.bpf.vm.core.BpfVirtualMachine
- * @see com.slytechs.jnet.jnetpcap.bpf.vm.core.BpfProgram
- * @see com.slytechs.jnet.jnetpcap.bpf.vm.instruction.BpfOpcode
+ * @see com.slytechs.jnet.jnetruntime.jnpl.vm.core.BpfVirtualMachine
+ * @see com.slytechs.jnet.jnetruntime.jnpl.vm.core.BpfProgram
+ * @see com.slytechs.jnet.jnetruntime.jnpl.vm.instruction.BpfOpcode
  * 
  * @author Sly Technologies Inc
  * @version 1.0
  */
-module com.slytechs.jnet.jnetpcap.bpf.vm {
+module com.slytechs.jnet.jnetruntime.jnpl.vm {
 
 	/**
 	 * Core Java runtime dependency. Required for basic Java functionality including
@@ -55,32 +55,32 @@ module com.slytechs.jnet.jnetpcap.bpf.vm {
 	 * Core VM implementation package. Contains the main virtual machine
 	 * implementation, program representation, and execution context.
 	 */
-	exports com.slytechs.jnet.jnetpcap.bpf.vm.core;
+	exports com.slytechs.jnet.jnetruntime.jnpl.vm.core;
 
 	/**
 	 * Instruction set definition package. Contains BPF instruction definitions,
 	 * opcodes, and related constant values.
 	 */
-	exports com.slytechs.jnet.jnetpcap.bpf.vm.instruction;
+	exports com.slytechs.jnet.jnetruntime.jnpl.vm.instruction;
 
 	/**
 	 * Public API package. Contains interfaces and classes intended for public use
 	 * and extension.
 	 */
-	exports com.slytechs.jnet.jnetpcap.bpf.vm.api;
+	exports com.slytechs.jnet.jnetruntime.jnpl.vm.api;
 
 	/**
 	 * Utility classes package. Contains helper classes, data structures, and common
 	 * functionality used across the module.
 	 */
-	exports com.slytechs.jnet.jnetpcap.bpf.vm.util;
+	exports com.slytechs.jnet.jnetruntime.jnpl.vm.util;
 
 	/**
 	 * Development and debugging tools package. Restricted export to specific tool
 	 * and debug modules. Contains program analysis, debugging, and development
 	 * tools.
 	 */
-	exports com.slytechs.jnet.jnetpcap.bpf.vm.tools to
+	exports com.slytechs.jnet.jnetruntime.jnpl.vm.tools to
 			com.slytechs.jnet.jnetpcap.debug,
 			com.slytechs.jnet.jnetpcap.tools;
 
@@ -88,19 +88,19 @@ module com.slytechs.jnet.jnetpcap.bpf.vm {
 	 * Test access configuration. Opens core packages for reflection access during
 	 * testing. This allows test frameworks to access and verify internal state.
 	 */
-	opens com.slytechs.jnet.jnetpcap.bpf.vm.core to
+	opens com.slytechs.jnet.jnetruntime.jnpl.vm.core to
 			com.slytechs.jnet.jnetpcap.test;
 
 	/**
 	 * Extension point service interface. Declares the use of the BpfExtension
 	 * service interface for runtime extension of VM functionality.
 	 */
-	uses com.slytechs.jnet.jnetpcap.bpf.vm.api.BpfExtension;
+	uses com.slytechs.jnet.jnetruntime.jnpl.vm.api.BpfExtension;
 
 	/**
 	 * Default extension provider. Registers the default implementation of the
 	 * BpfExtension service interface providing basic VM extensions.
 	 */
-	provides com.slytechs.jnet.jnetpcap.bpf.vm.api.BpfExtension with
-			com.slytechs.jnet.jnetpcap.bpf.vm.core.DefaultBpfExtension;
+	provides com.slytechs.jnet.jnetruntime.jnpl.vm.api.BpfExtension with
+			com.slytechs.jnet.jnetruntime.jnpl.vm.core.DefaultBpfExtension;
 }
