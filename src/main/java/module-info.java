@@ -49,6 +49,7 @@ module com.slytechs.jnet.jnetpcap.bpf.vm {
 	 * NIO buffers and standard collections.
 	 */
 	requires java.base;
+	requires com.slytechs.jnet.jnetruntime;
 
 	/**
 	 * Core VM implementation package. Contains the main virtual machine

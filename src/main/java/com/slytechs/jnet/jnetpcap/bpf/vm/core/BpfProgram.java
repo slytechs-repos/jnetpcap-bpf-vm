@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.slytechs.jnet.jnetruntime.vm.Program;
+
 /**
  * Represents a compiled BPF (Berkeley Packet Filter) program composed of a
  * sequence of BPF instructions. This class encapsulates the binary
@@ -45,7 +47,7 @@ import java.util.stream.Stream;
  * @author
  * @version 1.0.0
  */
-public class BpfProgram implements Iterable<BpfInstruction> {
+public class BpfProgram implements Program, Iterable<BpfInstruction> {
 
 	/** Maximum allowed instructions in a single BPF program */
 	private static final int MAX_INSTRUCTIONS = 4096;
