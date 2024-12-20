@@ -27,7 +27,7 @@ public class BpfRegisters {
     /** Error status register */
     public static final int REG_ERROR_STATUS = REG_EXT_BASE + 0;
     
-    /** Frame length register */
+    /** FrameHeader length register */
     public static final int REG_FRAME_LEN = REG_EXT_BASE + 1;
     
     /** Protocol offset register */
