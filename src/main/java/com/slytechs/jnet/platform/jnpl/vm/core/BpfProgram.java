@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.slytechs.jnet.jnetruntime.vm.Program;
+import com.slytechs.jnet.platform.api.vm.Program;
 
 /**
  * Represents a compiled BPF (Berkeley Packet Filter) program composed of a
